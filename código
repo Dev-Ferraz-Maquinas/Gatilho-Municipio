@@ -1,0 +1,48 @@
+#INCLUDE 'TOTVS.CH'
+#INCLUDE 'PROTHEUS.CH'
+
+
+
+User Function municipio()
+
+
+    Local cEstado := M->A1_EST
+    Local cCodigo := {}
+    Local cMunicipio := M->A1_MUN
+    Local resultado
+
+
+    BeginSql Alias "Mun"
+
+        select CC2_EST,CC2_CODMUN,CC2_MUN
+        from CC2990
+        where CC2_MUN = %exp:cMunicipio% AND CC2_EST = %exp:cEstado%
+
+
+    EndSql
+
+
+    While !Eof()
+
+        aadd(cCodigo,FieldGet(2))
+
+    Skip()
+
+    EndDo
+
+
+    Mun -> (DbSkip()) 
+
+    Mun -> (DbCloseArea())
+
+    IF EMPTY(cCodigo)
+
+        Alert("Essa cidade não faz parte desse estado")
+    else
+        resultado := cCodigo[1]
+        Return resultado    
+    EndIf
+
+Return
+
+
